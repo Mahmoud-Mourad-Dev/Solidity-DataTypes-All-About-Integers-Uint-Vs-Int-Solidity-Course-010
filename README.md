@@ -8,6 +8,15 @@ In Solidity, integers are divided into two categories: signed integers and unsig
 Each category has a range of bit sizes from 8 bits to 256 bits, in increments of 8 bits.
 Unsigned integers can only represent non-negative values.
 The uint type is an alias for uint256, meaning it is a 256-bit unsigned integer by default. 
+
+
+
+
+
+
+
+
+
 ```solidity
 // SPDX-License-Identifier:MIT
 pragma solidity ^0.8.0;
@@ -315,6 +324,48 @@ contract EmulatedFixedPoint {
 
     function fromFixed(uint256 x) public pure returns (uint256) {
         return x / SCALE;
+    }
+}
+```
+مثال: فحص صلاحيات باستخدام Bitwise
+هنفترض إن عندنا نظام صلاحيات (permissions) كل واحدة منهم بنمثلها ببت معين:
+
+الصلاحية	القيمة
+القراءة (read)	0001 = 1
+الكتابة (write)	0010 = 2
+المسح (delete)	0100 = 4
+التعديل (update)	1000 = 8
+
+يعني لو عندك رقم 5 (0101) يبقى معاك صلاحيات: قراءة و مسح.
+
+
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract BitwiseExample {
+    // Constants for permissions
+    uint constant READ = 1;   // 0001
+    uint constant WRITE = 2;  // 0010
+    uint constant DELETE = 4; // 0100
+    uint constant UPDATE = 8; // 1000
+
+    // تخزين صلاحيات كل مستخدم
+    mapping(address => uint) public permissions;
+
+    // إعطاء صلاحيات للمستخدم
+    function grantPermission(address user, uint permission) external {
+        permissions[user] |= permission; // استخدام OR لإضافة صلاحية جديدة
+    }
+
+    // إلغاء صلاحية من المستخدم
+    function revokePermission(address user, uint permission) external {
+        permissions[user] &= ~permission; // استخدام AND مع NOT لإزالة الصلاحية
+    }
+
+    // التحقق هل للمستخدم صلاحية معينة
+    function hasPermission(address user, uint permission) external view returns (bool) {
+        return (permissions[user] & permission) != 0;
     }
 }
 ```
