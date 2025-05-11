@@ -1,4 +1,4 @@
-# 002-Solidity-Data-Type-Integers
+# Solidity-DataTypes-All-About-Integers-Uint-Vs-Int-Solidity-Course-010
 Solidity Data Type Integers
 
 
